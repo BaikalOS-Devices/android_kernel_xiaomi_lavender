@@ -55,6 +55,7 @@ Module.symvers
 /toolchain
 /toolchains
 xx.sh
+net/wireguard/
 
 #
 # Debian directory (make deb-pkg)
