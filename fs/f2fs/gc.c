@@ -673,12 +673,23 @@ static int move_data_block(struct inode *inode, block_t bidx,
 	f2fs_wait_on_page_writeback(page, DATA, true);
 
 	f2fs_get_node_info(fio.sbi, dn.nid, &ni);
+	
+	f2fs_wait_on_block_writeback(inode, dn.data_blkaddr);
+
 	set_summary(&sum, dn.nid, dn.ofs_in_node, ni.version);
 
 	/* read page */
 	fio.page = page;
 	fio.new_blkaddr = fio.old_blkaddr = dn.data_blkaddr;
 
+	/*
+	 * don't cache encrypted data into meta inode until previous dirty
+	 * data were writebacked to avoid racing between GC and flush.
+	 */
+	f2fs_wait_on_page_writeback(page, DATA, true);
+
+	f2fs_wait_on_block_writeback(inode, dn.data_blkaddr);
+	
 	if (lfs_mode)
 		down_write(&fio.sbi->io_order_lock);
 
