@@ -2829,7 +2829,11 @@ static int __get_nat_bitmaps(struct f2fs_sb_info *sbi)
 	nat_bits_addr = __start_cp_addr(sbi) + sbi->blocks_per_seg -
 						nm_i->nat_bits_blocks;
 	for (i = 0; i < nm_i->nat_bits_blocks; i++) {
-		struct page *page = f2fs_get_meta_page(sbi, nat_bits_addr++);
+		struct page *page;
+
+		page = f2fs_get_meta_page(sbi, nat_bits_addr++);
+		if (IS_ERR(page))
+			return PTR_ERR(page);
 
 		memcpy(nm_i->nat_bits + (i << F2FS_BLKSIZE_BITS),
 					page_address(page), F2FS_BLKSIZE);
