@@ -2840,6 +2840,9 @@ static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi,
 }
 
 static inline bool is_valid_blkaddr(block_t blkaddr)
+
+#define __is_large_section(sbi)		((sbi)->segs_per_sec > 1)
+
 {
 	if (blkaddr == NEW_ADDR || blkaddr == NULL_ADDR)
 		return false;
