@@ -527,7 +527,7 @@ retry_dn:
 		goto out;
 	}
 
-	f2fs_wait_on_page_writeback(dn.node_page, NODE, true);
+	f2fs_wait_on_page_writeback(dn.node_page, NODE, true, true);
 
 	f2fs_get_node_info(sbi, dn.nid, &ni);
 	f2fs_bug_on(sbi, ni.ino != ino_of_node(page));

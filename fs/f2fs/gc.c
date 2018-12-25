@@ -622,7 +622,6 @@ static bool is_alive(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
 		return false;
 	return true;
 }
-
 /*
  * Move data block via META_MAPPING while keeping locked data page.
  * This can be used to move blocks, aka LBAs, directly on disk.
@@ -687,7 +686,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
 	 * don't cache encrypted data into meta inode until previous dirty
 	 * data were writebacked to avoid racing between GC and flush.
 	 */
-	f2fs_wait_on_page_writeback(page, DATA, true);
+	f2fs_wait_on_page_writeback(page, DATA, true, true);
 
 	f2fs_get_node_info(fio.sbi, dn.nid, &ni);
 	
@@ -703,7 +702,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
 	 * don't cache encrypted data into meta inode until previous dirty
 	 * data were writebacked to avoid racing between GC and flush.
 	 */
-	f2fs_wait_on_page_writeback(page, DATA, true);
+	f2fs_wait_on_page_writeback(page, DATA, true, true);
 
 	f2fs_wait_on_block_writeback(inode, dn.data_blkaddr);
 	
@@ -738,7 +737,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
 
 	set_page_dirty(fio.encrypted_page);
 
-	f2fs_wait_on_page_writeback(fio.encrypted_page, DATA, true);
+	f2fs_wait_on_page_writeback(fio.encrypted_page, DATA, true, true);
 	set_page_dirty(fio.encrypted_page);
 	if (clear_page_dirty_for_io(fio.encrypted_page))
 		dec_page_count(fio.sbi, F2FS_DIRTY_META);
@@ -747,7 +746,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
 	ClearPageError(page);
 
 	/* allocate block address */
-	f2fs_wait_on_page_writeback(dn.node_page, NODE, true);
+	f2fs_wait_on_page_writeback(dn.node_page, NODE, true, true);
 
 	fio.op = REQ_OP_WRITE;
 	fio.op_flags = REQ_SYNC | REQ_NOIDLE;
@@ -833,7 +832,7 @@ static int move_data_page(struct inode *inode, block_t bidx, int gc_type,
 		bool is_dirty = PageDirty(page);
 
 retry:
-		f2fs_wait_on_page_writeback(page, DATA, true);
+		f2fs_wait_on_page_writeback(page, DATA, true, true);
 
 		set_page_dirty(page);
 		if (clear_page_dirty_for_io(page)) {
