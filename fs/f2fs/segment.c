@@ -332,8 +332,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
 			if (!list_empty(&fi->inmem_ilist))
 				list_del_init(&fi->inmem_ilist);
 			spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
-			mutex_unlock(&fi->inmem_lock);
 		}
+		mutex_unlock(&fi->inmem_lock);
 	}
 
 	clear_inode_flag(inode, FI_ATOMIC_FILE);
