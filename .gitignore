@@ -54,6 +54,7 @@ Module.symvers
 /out
 /toolchain
 /toolchains
+xx.sh
 
 #
 # Debian directory (make deb-pkg)
